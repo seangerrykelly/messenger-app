@@ -1,7 +1,10 @@
 import { io, Socket } from 'socket.io-client'
 import { useEffect, useState } from 'react'
+import { ChatContainer } from '@/components/ChatContainer'
+import { InputMessage } from '@/components/InputMessage'
+import { MessageList } from '@/components/MessageList'
 
-const username = prompt('What is your username?')
+// const username = prompt('What is your username?')
 const socket: Socket = io('http://localhost:3001', {
   transports: ['websocket', 'polling']
 })
@@ -17,7 +20,7 @@ function App() {
 
   useEffect(() => {
     socket.on('connect', () => {
-      socket.emit('username', username)
+      socket.emit('username', 'username')
     })
 
     socket.on('users', userList => {
@@ -29,7 +32,10 @@ function App() {
 
   return (
     <>
-      what up
+      <ChatContainer>
+        <MessageList />
+        <InputMessage />
+      </ChatContainer>
     </>
   )
 }
