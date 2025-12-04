@@ -13,7 +13,7 @@ io.on('connection', client => {
         };
         users[client.id] = user;
         io.emit('connected', user);
-        io.emit('users', Object.values(users));
+        // io.emit('users', Object.values(users));
     });
 
     client.on('send', message => {

@@ -7,7 +7,7 @@ type MessageListProps = {
 export const MessageList = ({ children }: MessageListProps) => {
 
     return (
-        <div className="flex-1">
+        <div className="flex flex-1 flex-col gap-2 overflow-y-scroll">
             {children}
         </div>
     )
