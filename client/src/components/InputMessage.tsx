@@ -3,15 +3,17 @@ import { useState, type ChangeEvent, type FormEvent } from "react"
 import { Button } from "@/components/ui/button"
 
 type InputMessageProps = {
-
+    handleSubmitMessage: (messageText: string) => void
 }
 
-export const InputMessage = () => {
+export const InputMessage = ({ handleSubmitMessage }: InputMessageProps) => {
     const [currMessage, setCurrMessage] = useState<string>('')
 
-    const handleSubmitMessage = (event: FormEvent<HTMLFormElement>) => {
+    const onSubmitMessage = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
-        console.log('submitted')
+        const inputMessageData = new FormData(event.currentTarget)
+        const messageText = inputMessageData.get('currMessage') as string
+        handleSubmitMessage(messageText)
         setCurrMessage('')
     }
 
@@ -22,9 +24,11 @@ export const InputMessage = () => {
     return (
         <form
             className="flex gap-1"
-            onSubmit={handleSubmitMessage}>
+            onSubmit={onSubmitMessage}>
             <Input 
-                type="text" 
+                type="text"
+                name="currMessage"
+                id="currMessage"
                 placeholder="Try saying hello"
                 value={currMessage}
                 onChange={handleChangeMessage}
