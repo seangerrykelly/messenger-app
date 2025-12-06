@@ -11,7 +11,7 @@ type LoginProps = {
 
 export const Login = ({ handleSubmitLogin }: LoginProps) => {
     return (
-        <Card className="w-full max-w-sm">
+        <Card className="w-full max-w-sm sm:m-0 m-2">
             <CardHeader>
                 <CardTitle className="text-xl">
                     Welcome!

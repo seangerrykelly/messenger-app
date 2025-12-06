@@ -6,12 +6,6 @@ import { Login } from '@/components/Login'
 import { MessageList } from '@/components/MessageList'
 import { MessageContainer } from '@/components/MessageContainer'
 
-// const username = prompt('What is your username?', 'newUser')
-const socket: Socket = io('http://localhost:3001', {
-  transports: ['websocket', 'polling']
-})
-
-
 export type User = {
   id: string;
   name: string;
@@ -22,6 +16,10 @@ export type Message = {
   date: string;
   user: User;
 }
+
+const socket: Socket = io('http://localhost:3001', {
+  transports: ['websocket', 'polling']
+})
 
 function App() {
   const [users, setUsers] = useState<Array<User>>([])
@@ -43,15 +41,24 @@ function App() {
     }
   }, [])
 
+  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const loginData = new FormData(event.currentTarget)
+    const username = loginData.get('username') as string
+    socket.emit('username', username)
+    if (socket.id && username) {
+      setCurrUser({
+        id: socket.id,
+        name: username
+      })
+      // TODO: add user info to local storage so login doesn't appear on refresh
+    }
+    console.log('username: ', username)
+  }
+
   // Socket event listeners
   const handleSocketInitConnect = () => {
-    // socket.emit('username', username)
-    // if (socket.id && username) {      
-    //   setCurrUser({
-    //     id: socket.id,
-    //     name: username
-    //   })
-    // }
+    // TODO: Check if currUser can be found in local/session storage
   }
 
   const handleSocketDisconnected = (id: string) => {
@@ -70,13 +77,6 @@ function App() {
 
   const handleSubmitChatMessage = (messageText: string) => {
     socket.emit('send', messageText)
-  }
-
-  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    const loginData = new FormData(event.currentTarget)
-    const usernameInput = loginData.get('username') as string
-    console.log('username: ', usernameInput)
   }
 
   if (!currUser) {
