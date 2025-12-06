@@ -5,6 +5,8 @@ import { InputMessage } from '@/components/InputMessage'
 import { Login } from '@/components/Login'
 import { MessageList } from '@/components/MessageList'
 import { MessageContainer } from '@/components/MessageContainer'
+import { SidebarProvider } from './components/ui/sidebar'
+import { ChatSidebar } from './components/ChatSidebar'
 
 export type User = {
   id: string;
@@ -93,7 +95,8 @@ function App() {
   }
 
   return (
-    <>
+    <SidebarProvider>
+      <ChatSidebar />
       <ChatContainer>
         <MessageList>
           {messages.map((message, index) => (
@@ -106,7 +109,7 @@ function App() {
         </MessageList>
         <InputMessage handleSubmitMessage={handleSubmitChatMessage} />
       </ChatContainer>
-    </>
+    </SidebarProvider>
   )
 }
 
