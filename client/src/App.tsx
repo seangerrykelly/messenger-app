@@ -1,11 +1,12 @@
 import { io, Socket } from 'socket.io-client'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { ChatContainer } from '@/components/ChatContainer'
 import { InputMessage } from '@/components/InputMessage'
+import { Login } from '@/components/Login'
 import { MessageList } from '@/components/MessageList'
-import { MessageContainer } from './components/MessageContainer'
+import { MessageContainer } from '@/components/MessageContainer'
 
-const username = prompt('What is your username?', 'newUser')
+// const username = prompt('What is your username?', 'newUser')
 const socket: Socket = io('http://localhost:3001', {
   transports: ['websocket', 'polling']
 })
@@ -44,13 +45,13 @@ function App() {
 
   // Socket event listeners
   const handleSocketInitConnect = () => {
-    socket.emit('username', username)
-    if (socket.id && username) {      
-      setCurrUser({
-        id: socket.id,
-        name: username
-      })
-    }
+    // socket.emit('username', username)
+    // if (socket.id && username) {      
+    //   setCurrUser({
+    //     id: socket.id,
+    //     name: username
+    //   })
+    // }
   }
 
   const handleSocketDisconnected = (id: string) => {
@@ -71,8 +72,19 @@ function App() {
     socket.emit('send', messageText)
   }
 
+  const handleLogin = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const loginData = new FormData(event.currentTarget)
+    const usernameInput = loginData.get('username') as string
+    console.log('username: ', usernameInput)
+  }
+
   if (!currUser) {
-    return
+    return (
+      <div className="flex h-screen justify-center items-center">
+        <Login handleSubmitLogin={handleLogin} />
+      </div>
+    )
   }
 
   return (
