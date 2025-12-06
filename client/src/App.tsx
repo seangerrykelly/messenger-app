@@ -23,8 +23,13 @@ const socket: Socket = io('http://localhost:3001', {
 
 function App() {
   const [users, setUsers] = useState<Array<User>>([])
-  const [currUser, setCurrUser] = useState<User>()
   const [messages, setMessages] = useState<Array<Message>>([])
+
+  // Initialize user from local storage if it exists. Otherwise show login
+  const [currUser, setCurrUser] = useState<User | undefined>(() => {
+    const storedUser = localStorage.getItem('currUser')
+    return storedUser ? JSON.parse(storedUser) : undefined
+  })
 
   useEffect(() => {
     socket.on('connect', handleSocketInitConnect)
@@ -47,18 +52,18 @@ function App() {
     const username = loginData.get('username') as string
     socket.emit('username', username)
     if (socket.id && username) {
-      setCurrUser({
+      const user: User = {
         id: socket.id,
-        name: username
-      })
-      // TODO: add user info to local storage so login doesn't appear on refresh
+        name: username,
+      }
+      setCurrUser(user)
+      localStorage.setItem('currUser', JSON.stringify(user))
     }
-    console.log('username: ', username)
   }
 
   // Socket event listeners
   const handleSocketInitConnect = () => {
-    // TODO: Check if currUser can be found in local/session storage
+    // TODO: Check if socket is working and add error state if it isn't
   }
 
   const handleSocketDisconnected = (id: string) => {
