@@ -11,13 +11,19 @@ import { SidebarProvider } from './components/ui/sidebar'
 
 export type User = {
   id: string;
-  name: string;
+  username: string;
 }
 
 export type Message = {
   text: string;
   date: string;
   user: User;
+}
+
+export type Chat = {
+  id: string
+  users: Array<User>
+  messages: Array<Message>
 }
 
 const socket: Socket = io('http://localhost:3001', {
@@ -34,6 +40,9 @@ function App() {
     return storedUser ? JSON.parse(storedUser) : undefined
   })
 
+  const [currChat, setCurrChat] = useState<Chat | undefined>()
+  const [chats, setChats] = useState<Array<Chat>>([])
+
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState<boolean>(false)
 
   useEffect(() => {
@@ -42,6 +51,7 @@ function App() {
     socket.on('users', handleUpdateUsers)
     socket.on('message', handleUpdateMessages)
     socket.on('disconnected', handleSocketDisconnected)
+    socket.on('newChatCreated', handleNewChatCreated)
 
     // Cleanup to prevent duplicate listeners
     return () => {
@@ -50,6 +60,7 @@ function App() {
       socket.off('users', handleUpdateUsers)
       socket.off('message', handleUpdateMessages)
       socket.off('disconnected', handleSocketDisconnected)
+      socket.off('newChatCreated', handleNewChatCreated)
     }
   }, [])
 
@@ -61,7 +72,7 @@ function App() {
     if (socket.id && username) {
       const user: User = {
         id: socket.id,
-        name: username,
+        username: username,
       }
       setCurrUser(user)
       localStorage.setItem('currUser', JSON.stringify(user))
@@ -101,6 +112,18 @@ function App() {
     setIsNewChatModalOpen(isOpen)
   }
 
+  const createNewChat = (selectedUsers: Array<User>) => {
+    toggleOpenCreateNewChatModal(false)
+    console.log('create new chat between curr: ', currUser?.username, 'and ', selectedUsers.at(0)!.username)
+    socket.emit('createNewChat', [...selectedUsers, currUser])
+  }
+
+  const handleNewChatCreated = (chat: Chat) => {
+    console.log('chat: ', chat)
+    setChats(chats => [...chats, chat])
+    // TODO: update list of chats and show them in the sidebar list
+  }
+
   if (!currUser) {
     return (
       <div className="flex h-screen justify-center items-center">
@@ -111,24 +134,31 @@ function App() {
 
   return (
     <SidebarProvider>
-      <ChatSidebar createNewChat={toggleOpenCreateNewChatModal} />
+      <ChatSidebar 
+        createNewChat={toggleOpenCreateNewChatModal} 
+        chats={chats}
+        currUser={currUser}
+      />
       <CreateNewChatModal 
-        onClickCreateChat={toggleOpenCreateNewChatModal}
+        currUser={currUser}
+        onClickCreateChat={createNewChat}
         isNewChatModalOpen={isNewChatModalOpen} 
         userList={users}
       />
-      <ChatContainer>
-        <MessageList>
-          {messages.map((message, index) => (
-            <MessageContainer
-              key={`message-${index}`}
-              messageData={message}
-              currUser={currUser}
-            />
-          ))}
-        </MessageList>
-        <InputMessage handleSubmitMessage={handleSubmitChatMessage} />
-      </ChatContainer>
+      {currChat && (
+        <ChatContainer>
+          <MessageList>
+            {messages.map((message, index) => (
+              <MessageContainer
+                key={`message-${index}`}
+                messageData={message}
+                currUser={currUser}
+              />
+            ))}
+          </MessageList>
+          <InputMessage handleSubmitMessage={handleSubmitChatMessage} />
+        </ChatContainer>
+      )}
     </SidebarProvider>
   )
 }

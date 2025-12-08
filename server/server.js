@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 const server = createServer();
 const io = new Server(server, { transports: ['websocket', 'polling'] });
 const users = {};
+const chats = {};
 
 io.on('connection', client => {
     client.on('getUserList', () => {
@@ -12,7 +13,7 @@ io.on('connection', client => {
 
     client.on('username', username => {
         const user = {
-            name: username,
+            username: username,
             id: client.id
         };
         users[client.id] = user;
@@ -28,10 +29,19 @@ io.on('connection', client => {
         });
     });
 
-    client.on('disconnect', () => {
-        delete users[client.id];
-        io.emit('disconnected', client.id);
-    });
+    client.on('createNewChat', users => {
+        const chat = {
+            id: crypto.randomUUID(),
+            users,
+            messages: [],
+        }
+        io.emit('newChatCreated', chat)
+    })
+
+    // client.on('disconnect', () => {
+    //     delete users[client.id];
+    //     io.emit('disconnected', client.id);
+    // });
 });
 
 server.listen(3001);

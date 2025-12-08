@@ -8,12 +8,13 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 
 type CreateNewChatModalProps = {
-    onClickCreateChat: (isOpen: boolean) => void
+    currUser: User
+    onClickCreateChat: (selectedUsers: Array<User>) => void
     isNewChatModalOpen: boolean
     userList: Array<User>
 }
 
-export const CreateNewChatModal = ({ onClickCreateChat, isNewChatModalOpen, userList }: CreateNewChatModalProps) => {
+export const CreateNewChatModal = ({ currUser, onClickCreateChat, isNewChatModalOpen, userList }: CreateNewChatModalProps) => {
     const [selectedUsers, setSelectedUsers] = useState<Array<User>>([])
 
     useEffect(() => {
@@ -40,18 +41,18 @@ export const CreateNewChatModal = ({ onClickCreateChat, isNewChatModalOpen, user
                     Search for the name of the user you want to message
                 </DialogDescription>
                 <div>
-                    {userList.map((user, index) => (
+                    {userList.filter(user => user.id !== currUser.id).map((user, index) => (
                         <Label className="hover:bg-accent flex items-start gap-3 rounded-lg border p-3 has-aria-checked:border-primary has-aria-checked:bg-chart-1">
                             <Checkbox 
                                 id={`user-checkbox-${index}`}
                                 onCheckedChange={(checked: boolean) => onUserSelected(checked, user)}
                             />
-                            {user.name}
+                            {user.username}
                         </Label>
                     ))}
                 </div>
                 <DialogFooter>
-                    <Button onClick={() => onClickCreateChat(false)}>Create Chat</Button>
+                    <Button onClick={() => onClickCreateChat(selectedUsers)}>Create Chat</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
