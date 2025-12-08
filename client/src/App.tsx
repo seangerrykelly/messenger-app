@@ -39,6 +39,7 @@ function App() {
   useEffect(() => {
     socket.on('connect', handleSocketInitConnect)
     socket.on('connected', handleNewUserConnected)
+    socket.on('users', handleUpdateUsers)
     socket.on('message', handleUpdateMessages)
     socket.on('disconnected', handleSocketDisconnected)
 
@@ -46,6 +47,7 @@ function App() {
     return () => {
       socket.off('connect', handleSocketInitConnect)
       socket.off('connected', handleNewUserConnected)
+      socket.off('users', handleUpdateUsers)
       socket.off('message', handleUpdateMessages)
       socket.off('disconnected', handleSocketDisconnected)
     }
@@ -69,6 +71,7 @@ function App() {
   // Socket event listeners
   const handleSocketInitConnect = () => {
     // TODO: Check if socket is working and add error state if it isn't
+    socket.emit('getUserList')
   }
 
   const handleSocketDisconnected = (id: string) => {
@@ -77,8 +80,13 @@ function App() {
     })
   }
 
+  const handleUpdateUsers = (userList: Array<User>) => {
+    console.log('userList: ', userList)
+    setUsers(userList)
+  }
+
   const handleNewUserConnected = (user: User) => {
-    setUsers(users => [...users, user])
+    // setUsers(users => [...users, user])
   }
 
   const handleUpdateMessages = (newMessage: any) => {

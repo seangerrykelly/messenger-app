@@ -6,6 +6,10 @@ const io = new Server(server, { transports: ['websocket', 'polling'] });
 const users = {};
 
 io.on('connection', client => {
+    client.on('getUserList', () => {
+        io.emit('users', Object.values(users))
+    })
+
     client.on('username', username => {
         const user = {
             name: username,
@@ -13,7 +17,7 @@ io.on('connection', client => {
         };
         users[client.id] = user;
         io.emit('connected', user);
-        // io.emit('users', Object.values(users));
+        io.emit('users', Object.values(users));
     });
 
     client.on('send', message => {

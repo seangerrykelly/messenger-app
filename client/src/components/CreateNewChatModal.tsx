@@ -20,8 +20,13 @@ export const CreateNewChatModal = ({ isNewChatModalOpen, userList }: CreateNewCh
                 <DialogDescription>
                     Search for the name of the user you want to message
                 </DialogDescription>
+                <div>
+                    {userList.map((user, index) => (
+                        <div>{user.name}</div>
+                    ))}
+                </div>
                 <DialogFooter>
-                    <Button>Create Chat</Button>
+                    <Button disabled={selectedUsers.length === 0}>Create Chat</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
