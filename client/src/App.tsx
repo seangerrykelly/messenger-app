@@ -97,8 +97,8 @@ function App() {
     socket.emit('send', messageText)
   }
 
-  const openCreateNewChatModal = () => {
-    setIsNewChatModalOpen(true)
+  const toggleOpenCreateNewChatModal = (isOpen: boolean) => {
+    setIsNewChatModalOpen(isOpen)
   }
 
   if (!currUser) {
@@ -111,8 +111,9 @@ function App() {
 
   return (
     <SidebarProvider>
-      <ChatSidebar createNewChat={openCreateNewChatModal} />
+      <ChatSidebar createNewChat={toggleOpenCreateNewChatModal} />
       <CreateNewChatModal 
+        onClickCreateChat={toggleOpenCreateNewChatModal}
         isNewChatModalOpen={isNewChatModalOpen} 
         userList={users}
       />

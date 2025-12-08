@@ -3,14 +3,14 @@ import { Button } from "@/components/ui/button"
 import { MessageCirclePlus } from "lucide-react"
 
 type ChatSidebarProps = {
-    createNewChat: () => void
+    createNewChat: (isOpen: boolean) => void
 }
 
 export const ChatSidebar = ({ createNewChat }: ChatSidebarProps) => {
     return (
         <Sidebar>
             <SidebarHeader>
-                <Button onClick={createNewChat}>New Chat <MessageCirclePlus /></Button>
+                <Button onClick={() => createNewChat(true)}>New Chat <MessageCirclePlus /></Button>
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup />
