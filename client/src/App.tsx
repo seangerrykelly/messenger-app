@@ -1,12 +1,13 @@
 import { io, Socket } from 'socket.io-client'
 import { useEffect, useState, type FormEvent } from 'react'
 import { ChatContainer } from '@/components/ChatContainer'
+import { ChatSidebar } from '@/components/ChatSidebar'
+import { CreateNewChatModal } from '@/components/CreateNewChatModal'
 import { InputMessage } from '@/components/InputMessage'
 import { Login } from '@/components/Login'
 import { MessageList } from '@/components/MessageList'
 import { MessageContainer } from '@/components/MessageContainer'
 import { SidebarProvider } from './components/ui/sidebar'
-import { ChatSidebar } from './components/ChatSidebar'
 
 export type User = {
   id: string;
@@ -32,6 +33,8 @@ function App() {
     const storedUser = localStorage.getItem('currUser')
     return storedUser ? JSON.parse(storedUser) : undefined
   })
+
+  const [isNewChatModalOpen, setIsNewChatModalOpen] = useState<boolean>(false)
 
   useEffect(() => {
     socket.on('connect', handleSocketInitConnect)
@@ -86,6 +89,10 @@ function App() {
     socket.emit('send', messageText)
   }
 
+  const openCreateNewChatModal = () => {
+    setIsNewChatModalOpen(true)
+  }
+
   if (!currUser) {
     return (
       <div className="flex h-screen justify-center items-center">
@@ -96,7 +103,11 @@ function App() {
 
   return (
     <SidebarProvider>
-      <ChatSidebar />
+      <ChatSidebar createNewChat={openCreateNewChatModal} />
+      <CreateNewChatModal 
+        isNewChatModalOpen={isNewChatModalOpen} 
+        userList={users}
+      />
       <ChatContainer>
         <MessageList>
           {messages.map((message, index) => (
