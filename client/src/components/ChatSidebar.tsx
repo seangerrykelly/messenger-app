@@ -1,0 +1,53 @@
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
+import { Button } from "@/components/ui/button"
+import { MessageCirclePlus } from "lucide-react"
+import type { Chat, User } from "@/App"
+
+type ChatSidebarProps = {
+    createNewChat: (isOpen: boolean) => void
+    onClickOpenChat: (chat: Chat) => void
+    chats: Array<Chat>
+    currUser: User
+}
+
+export const ChatSidebar = ({ createNewChat, onClickOpenChat, chats, currUser }: ChatSidebarProps) => {
+
+    const renderOpenChatButton = (chat: Chat) => {
+        const usersInChat = chat.users.filter(user => user.id !== currUser.id)
+        const usernames = usersInChat.map(user => user.username).join(' ,')
+
+        return (
+            <SidebarMenuItem key={chat.id}>
+                <SidebarMenuButton asChild>
+                    <Button onClick={() => onClickOpenChat(chat)}>{usernames}</Button>
+                </SidebarMenuButton>
+            </SidebarMenuItem>
+        )
+    }
+
+    return (
+        <Sidebar>
+            <SidebarHeader>
+                <Button onClick={() => createNewChat(true)}>New Chat <MessageCirclePlus /></Button>
+            </SidebarHeader>
+            <SidebarContent>
+                <SidebarGroup>
+                    {chats.length > 0
+                        ?
+                        (<SidebarGroupLabel>Chats</SidebarGroupLabel>)
+                        :
+                        (<SidebarGroupLabel>Empty</SidebarGroupLabel>)
+                    }
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {chats.filter(chat => chat.users.some(user => user.id === currUser.id)).map((chat) => renderOpenChatButton(chat))}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            </SidebarContent>
+            <SidebarFooter>
+                <p>{currUser.username}</p>
+            </SidebarFooter>
+        </Sidebar>
+    )
+}
