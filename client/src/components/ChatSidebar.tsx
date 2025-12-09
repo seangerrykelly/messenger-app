@@ -1,4 +1,4 @@
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger } from "@/components/ui/sidebar"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
 import { MessageCirclePlus } from "lucide-react"
 import type { Chat, User } from "@/App"
@@ -40,7 +40,7 @@ export const ChatSidebar = ({ createNewChat, onClickOpenChat, chats, currUser }:
                     }
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {chats.filter(chat => chat.users.some(user => user.id === currUser.id)).map((chat, index) => renderOpenChatButton(chat))}
+                            {chats.filter(chat => chat.users.some(user => user.id === currUser.id)).map((chat) => renderOpenChatButton(chat))}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>

@@ -32,7 +32,6 @@ const socket: Socket = io('http://localhost:3001', {
 
 function App() {
   const [users, setUsers] = useState<Array<User>>([])
-  const [messages, setMessages] = useState<Array<Message>>([])
 
   // Initialize user from local storage if it exists. Otherwise show login
   const [currUser, setCurrUser] = useState<User | undefined>(() => {
