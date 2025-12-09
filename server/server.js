@@ -28,6 +28,7 @@ io.on('connection', client => {
             user: users[currUser.id]
         });
         io.emit('message', chats[chat.id])
+        io.emit('updateChats', Object.values(chats))
     });
 
     client.on('createNewChat', users => {

@@ -44,6 +44,7 @@ function App() {
   const [chats, setChats] = useState<Array<Chat>>([])
 
   const currChatRef = useRef<Chat | undefined>(undefined)
+  // const chatListRef = useRef<Array<Chat>>([undefined])
 
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState<boolean>(false)
 
