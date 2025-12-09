@@ -5,11 +5,12 @@ import type { Chat, User } from "@/App"
 
 type ChatSidebarProps = {
     createNewChat: (isOpen: boolean) => void
+    onClickOpenChat: (chat: Chat) => void
     chats: Array<Chat>
     currUser: User
 }
 
-export const ChatSidebar = ({ createNewChat, chats, currUser }: ChatSidebarProps) => {
+export const ChatSidebar = ({ createNewChat, onClickOpenChat, chats, currUser }: ChatSidebarProps) => {
 
     const renderOpenChatButton = (chat: Chat) => {
         const usersInChat = chat.users.filter(user => user.id !== currUser.id)
@@ -18,7 +19,7 @@ export const ChatSidebar = ({ createNewChat, chats, currUser }: ChatSidebarProps
         return (
             <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton asChild>
-                    <Button>{usernames}</Button>
+                    <Button onClick={() => onClickOpenChat(chat)}>{usernames}</Button>
                 </SidebarMenuButton>
             </SidebarMenuItem>
         )

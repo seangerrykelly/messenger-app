@@ -105,7 +105,7 @@ function App() {
   }
 
   const handleSubmitChatMessage = (messageText: string) => {
-    socket.emit('send', messageText)
+    socket.emit('send', messageText, currChat, currUser)
   }
 
   const toggleOpenCreateNewChatModal = (isOpen: boolean) => {
@@ -124,6 +124,11 @@ function App() {
     // TODO: update list of chats and show them in the sidebar list
   }
 
+  const handleOpenChat = (chat: Chat) => {
+      console.log('open chat: ', chat)
+      setCurrChat(chat)
+  }
+
   if (!currUser) {
     return (
       <div className="flex h-screen justify-center items-center">
@@ -136,6 +141,7 @@ function App() {
     <SidebarProvider>
       <ChatSidebar 
         createNewChat={toggleOpenCreateNewChatModal} 
+        onClickOpenChat={handleOpenChat}
         chats={chats}
         currUser={currUser}
       />
