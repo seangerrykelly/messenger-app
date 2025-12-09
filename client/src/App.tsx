@@ -1,5 +1,5 @@
 import { io, Socket } from 'socket.io-client'
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { ChatContainer } from '@/components/ChatContainer'
 import { ChatSidebar } from '@/components/ChatSidebar'
 import { CreateNewChatModal } from '@/components/CreateNewChatModal'
@@ -43,6 +43,8 @@ function App() {
   const [currChat, setCurrChat] = useState<Chat | undefined>()
   const [chats, setChats] = useState<Array<Chat>>([])
 
+  const currChatRef = useRef<Chat | undefined>(undefined)
+
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState<boolean>(false)
 
   useEffect(() => {
@@ -52,6 +54,7 @@ function App() {
     socket.on('message', handleUpdateMessages)
     socket.on('disconnected', handleSocketDisconnected)
     socket.on('newChatCreated', handleNewChatCreated)
+    socket.on('updateChats', handleUpdateChats)
 
     // Cleanup to prevent duplicate listeners
     return () => {
@@ -61,6 +64,7 @@ function App() {
       socket.off('message', handleUpdateMessages)
       socket.off('disconnected', handleSocketDisconnected)
       socket.off('newChatCreated', handleNewChatCreated)
+      socket.off('updateChats', handleUpdateChats)
     }
   }, [])
 
@@ -100,8 +104,17 @@ function App() {
     // setUsers(users => [...users, user])
   }
 
-  const handleUpdateMessages = (newMessage: any) => {
-    setMessages(messages => [...messages, newMessage]);
+  const handleUpdateMessages = (chat: Chat) => {
+    console.log('new chat: ', chat)
+    console.log('currChatRef: ', currChatRef.current)
+    if (currChatRef.current?.id === chat.id) {
+      console.log('updating messages in chat')
+      setCurrChat(chat);
+    }
+  }
+
+  const handleUpdateChats = (chatList: Array<Chat>) => {
+    setChats(chatList)
   }
 
   const handleSubmitChatMessage = (messageText: string) => {
@@ -126,7 +139,9 @@ function App() {
 
   const handleOpenChat = (chat: Chat) => {
       console.log('open chat: ', chat)
-      setCurrChat(chat)
+      console.log('found chat: ', chats.find(c => c.id === chat.id))
+      setCurrChat(chats.find(c => c.id === chat.id))
+      currChatRef.current = chat
   }
 
   if (!currUser) {
@@ -154,7 +169,7 @@ function App() {
       {currChat && (
         <ChatContainer>
           <MessageList>
-            {messages.map((message, index) => (
+            {currChat.messages.map((message, index) => (
               <MessageContainer
                 key={`message-${index}`}
                 messageData={message}

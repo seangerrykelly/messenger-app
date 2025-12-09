@@ -21,13 +21,13 @@ io.on('connection', client => {
         io.emit('users', Object.values(users));
     });
 
-    client.on('send', (message, chat, currUser) => {
-        chats[chat.id].messages.push(message);
-        io.emit('message', {
-            text: message,
+    client.on('send', (messageText, chat, currUser) => {
+        chats[chat.id].messages.push({
+            text: messageText,
             date: new Date().toISOString(),
-            user: users[currUser.id],
+            user: users[currUser.id]
         });
+        io.emit('message', chats[chat.id])
     });
 
     client.on('createNewChat', users => {

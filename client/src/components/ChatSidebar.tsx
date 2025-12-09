@@ -40,13 +40,13 @@ export const ChatSidebar = ({ createNewChat, onClickOpenChat, chats, currUser }:
                     }
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {chats.map((chat, index) => renderOpenChatButton(chat))}
+                            {chats.filter(chat => chat.users.some(user => user.id === currUser.id)).map((chat, index) => renderOpenChatButton(chat))}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
             <SidebarFooter>
-                {/* Avatar goes here with username + button to log out */}
+                <p>{currUser.username}</p>
             </SidebarFooter>
         </Sidebar>
     )
