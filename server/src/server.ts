@@ -1,18 +1,19 @@
 import { createServer } from 'http'
 import { Server } from 'socket.io'
+import { getExistingChat } from './getExistingChat'
 
-type User = {
+export type User = {
     username: string
     id: string
 }
 
-type Message = {
+export type Message = {
     text: string
     date: string
     user: User
 }
 
-type Chat = {
+export type Chat = {
     id: string
     users: User[]
     messages: Message[]
@@ -49,14 +50,19 @@ io.on('connection', client => {
         io.emit('updateChats', Object.values(chats))
     })
 
-    client.on('createNewChat', users => {
-        const chat: Chat = {
-            id: crypto.randomUUID(),
-            users,
-            messages: [],
+    client.on('createNewChat', selectedUsers => {
+        const existingChat = getExistingChat(selectedUsers, Object.values(chats))
+        if (!existingChat) {
+            const chat: Chat = {
+                id: crypto.randomUUID(),
+                users: selectedUsers,
+                messages: [],
+            }
+            chats[chat.id] = chat
+            io.emit('newChatCreated', chat)
+        } else {
+            io.emit('openExistingChat', existingChat)
         }
-        chats[chat.id] = chat
-        io.emit('newChatCreated', chat)
     })
 
     // client.on('disconnect', () => {
