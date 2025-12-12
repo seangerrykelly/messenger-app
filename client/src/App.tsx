@@ -144,11 +144,9 @@ function App() {
 
   // Go here if the chat exists already
   const handleOpenChat = (chat: Chat) => {
-      // console.log('open chat: ', chat)
-      // console.log('found chat: ', chatListRef.current.find(c => c.id === chat.id))
-      // console.log('chats: ', chats)
-      setCurrChat(chatListRef.current.find(c => c.id === chat.id))
-      currChatRef.current = chat
+    // TODO: fix bug here where chat opens on all clients instead of just currUser's
+    setCurrChat(chatListRef.current.find(c => c.id === chat.id))
+    currChatRef.current = chat
   }
 
   if (!currUser) {
@@ -166,6 +164,7 @@ function App() {
         onClickOpenChat={handleOpenChat}
         chats={chats}
         currUser={currUser}
+        currChat={currChat}
       />
       <CreateNewChatModal 
         currUser={currUser}

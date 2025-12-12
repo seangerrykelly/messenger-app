@@ -43,7 +43,9 @@ export const CreateNewChatModal = ({ currUser, onClickCreateChat, isNewChatModal
                 </DialogDescription>
                 <div>
                     {userList.filter(user => user.id !== currUser.id).map((user, index) => (
-                        <Label className="hover:bg-accent flex items-start gap-3 rounded-lg border p-3 has-aria-checked:border-primary has-aria-checked:bg-chart-1">
+                        <Label
+                            key={`user-${user.id}`}
+                            className="hover:bg-accent flex items-start gap-3 rounded-lg border p-3 has-aria-checked:border-primary has-aria-checked:bg-chart-1">
                             <Checkbox 
                                 id={`user-checkbox-${index}`}
                                 onCheckedChange={(checked: boolean) => onUserSelected(checked, user)}
