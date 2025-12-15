@@ -1,5 +1,5 @@
 import type { User } from "@/App"
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -17,10 +17,6 @@ type CreateNewChatModalProps = {
 export const CreateNewChatModal = ({ currUser, onClickCreateChat, isNewChatModalOpen, userList }: CreateNewChatModalProps) => {
     const [selectedUsers, setSelectedUsers] = useState<Array<User>>([])
 
-    useEffect(() => {
-        console.log('selectedUsers: ', selectedUsers)
-    }, [selectedUsers])
-
     const onUserSelected = (checked: boolean, user: User) => {
         if (checked) {
             setSelectedUsers(selectedUsers => [...selectedUsers, user])
@@ -29,6 +25,11 @@ export const CreateNewChatModal = ({ currUser, onClickCreateChat, isNewChatModal
                 return selectedUsers.filter(selectedUser => selectedUser.id !== user.id)
             })
         }
+    }
+
+    const onClickCreateChatButton = () => {
+        onClickCreateChat(selectedUsers)
+        setSelectedUsers([])
     }
     
     return (
@@ -42,7 +43,9 @@ export const CreateNewChatModal = ({ currUser, onClickCreateChat, isNewChatModal
                 </DialogDescription>
                 <div>
                     {userList.filter(user => user.id !== currUser.id).map((user, index) => (
-                        <Label className="hover:bg-accent flex items-start gap-3 rounded-lg border p-3 has-aria-checked:border-primary has-aria-checked:bg-chart-1">
+                        <Label
+                            key={`user-${user.id}`}
+                            className="hover:bg-accent flex items-start gap-3 rounded-lg border p-3 has-aria-checked:border-primary has-aria-checked:bg-chart-1">
                             <Checkbox 
                                 id={`user-checkbox-${index}`}
                                 onCheckedChange={(checked: boolean) => onUserSelected(checked, user)}
@@ -52,7 +55,7 @@ export const CreateNewChatModal = ({ currUser, onClickCreateChat, isNewChatModal
                     ))}
                 </div>
                 <DialogFooter>
-                    <Button onClick={() => onClickCreateChat(selectedUsers)}>Create Chat</Button>
+                    <Button onClick={onClickCreateChatButton}>Create Chat</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

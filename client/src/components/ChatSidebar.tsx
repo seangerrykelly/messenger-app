@@ -1,5 +1,6 @@
-import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "@/components/ui/sidebar"
 import { MessageCirclePlus } from "lucide-react"
 import type { Chat, User } from "@/App"
 
@@ -8,18 +9,36 @@ type ChatSidebarProps = {
     onClickOpenChat: (chat: Chat) => void
     chats: Array<Chat>
     currUser: User
+    currChat: Chat | undefined
 }
 
-export const ChatSidebar = ({ createNewChat, onClickOpenChat, chats, currUser }: ChatSidebarProps) => {
+export const ChatSidebar = ({ createNewChat, onClickOpenChat, chats, currUser, currChat }: ChatSidebarProps) => {
 
     const renderOpenChatButton = (chat: Chat) => {
         const usersInChat = chat.users.filter(user => user.id !== currUser.id)
-        const usernames = usersInChat.map(user => user.username).join(' ,')
+        const usernames = usersInChat.map(user => user.username).join(', ')
+        let lastMessageInChat = "Empty chat"
+        
+        if (chat.messages.at(-1)?.text) {
+            lastMessageInChat = chat.messages.at(-1)?.user.username + ': ' + chat.messages.at(-1)?.text
+        }
 
         return (
             <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton asChild>
-                    <Button onClick={() => onClickOpenChat(chat)}>{usernames}</Button>
+                    <div 
+                        className={`flex h-full border ${currChat && chat.id === currChat.id ? 'bg-chart-1': 'bg-background'} hover:bg-accent pointer-events-auto`}
+                        onClick={() => onClickOpenChat(chat)}
+                    >
+                        <Avatar>
+                            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                            <AvatarFallback>CN</AvatarFallback>
+                        </Avatar>
+                        <div className="flex overflow-hidden flex-col">
+                            <p className="font-bold text-xl truncate">{usernames}</p>
+                            <p className="font-light text-xs truncate">{lastMessageInChat}</p>
+                        </div>
+                    </div>
                 </SidebarMenuButton>
             </SidebarMenuItem>
         )

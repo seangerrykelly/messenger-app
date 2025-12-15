@@ -6,6 +6,8 @@ type MessageProps = {
 }
 
 export const MessageContainer = ({ messageData, currUser }: MessageProps) => {
+    console.log('currUser: ', currUser)
+    console.log('messageData.user: ', messageData.user)
     const isCurrUser = messageData.user.id === currUser.id
     const background = isCurrUser ? 'bg-sidebar-primary' : 'bg-muted-foreground'
     const alignSelf = isCurrUser ? 'self-end' : 'self-start'

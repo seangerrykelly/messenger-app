@@ -43,7 +43,7 @@ function App() {
   const [chats, setChats] = useState<Array<Chat>>([])
 
   const currChatRef = useRef<Chat | undefined>(undefined)
-  // const chatListRef = useRef<Array<Chat>>([undefined])
+  const chatListRef = useRef<Array<Chat>>([])
 
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState<boolean>(false)
 
@@ -54,6 +54,7 @@ function App() {
     socket.on('message', handleUpdateMessages)
     socket.on('disconnected', handleSocketDisconnected)
     socket.on('newChatCreated', handleNewChatCreated)
+    socket.on('openExistingChat', handleOpenChat)
     socket.on('updateChats', handleUpdateChats)
 
     // Cleanup to prevent duplicate listeners
@@ -64,6 +65,7 @@ function App() {
       socket.off('message', handleUpdateMessages)
       socket.off('disconnected', handleSocketDisconnected)
       socket.off('newChatCreated', handleNewChatCreated)
+      socket.off('openExistingChat', handleOpenChat)
       socket.off('updateChats', handleUpdateChats)
     }
   }, [])
@@ -115,6 +117,7 @@ function App() {
 
   const handleUpdateChats = (chatList: Array<Chat>) => {
     setChats(chatList)
+    chatListRef.current = chatList
   }
 
   const handleSubmitChatMessage = (messageText: string) => {
@@ -131,17 +134,19 @@ function App() {
     socket.emit('createNewChat', [...selectedUsers, currUser])
   }
 
+  // Only go here if the chat doesn't exist already
   const handleNewChatCreated = (chat: Chat) => {
     console.log('chat: ', chat)
-    setChats(chats => [...chats, chat])
-    // TODO: update list of chats and show them in the sidebar list
+    const newChatList = [...chats, chat]
+    setChats(newChatList)
+    chatListRef.current = newChatList
   }
 
+  // Go here if the chat exists already
   const handleOpenChat = (chat: Chat) => {
-      console.log('open chat: ', chat)
-      console.log('found chat: ', chats.find(c => c.id === chat.id))
-      setCurrChat(chats.find(c => c.id === chat.id))
-      currChatRef.current = chat
+    // TODO: fix bug here where chat opens on all clients instead of just currUser's
+    setCurrChat(chatListRef.current.find(c => c.id === chat.id))
+    currChatRef.current = chat
   }
 
   if (!currUser) {
@@ -159,6 +164,7 @@ function App() {
         onClickOpenChat={handleOpenChat}
         chats={chats}
         currUser={currUser}
+        currChat={currChat}
       />
       <CreateNewChatModal 
         currUser={currUser}
