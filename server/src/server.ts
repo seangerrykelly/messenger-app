@@ -28,6 +28,7 @@ const chats: Record<string, Chat> = {}
 io.on('connection', client => {
     client.on('getUserList', () => {
         io.emit('users', Object.values(users))
+        io.emit('updateChats', Object.values(chats))
     })
 
     client.on('username', username => {
