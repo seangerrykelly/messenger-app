@@ -26,8 +26,8 @@ export const ChatSidebar = ({ createNewChat, onClickOpenChat, chats, currUser, c
         return (
             <SidebarMenuItem key={chat.id}>
                 <SidebarMenuButton asChild>
-                    {/* <div 
-                        className={`flex h-full border ${chat.id === currChat.id ? 'bg-chart-1': 'bg-background'} hover:bg-accent pointer-events-auto`}
+                    <div 
+                        className={`flex h-full border ${currChat && chat.id === currChat.id ? 'bg-chart-1': 'bg-background'} hover:bg-accent pointer-events-auto`}
                         onClick={() => onClickOpenChat(chat)}
                     >
                         <Avatar>
@@ -38,8 +38,7 @@ export const ChatSidebar = ({ createNewChat, onClickOpenChat, chats, currUser, c
                             <p className="font-bold text-xl">{usernames}</p>
                             <p className="font-light text-xs">{lastMessageInChat}</p>
                         </div>
-                    </div> */}
-                        <Button onClick={() => onClickOpenChat(chat)}>{usernames}</Button>
+                    </div>
                 </SidebarMenuButton>
             </SidebarMenuItem>
         )
