@@ -34,9 +34,9 @@ export const ChatSidebar = ({ createNewChat, onClickOpenChat, chats, currUser, c
                             <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
-                        <div className="flex flex-col">
-                            <p className="font-bold text-xl">{usernames}</p>
-                            <p className="font-light text-xs">{lastMessageInChat}</p>
+                        <div className="flex overflow-hidden flex-col">
+                            <p className="font-bold text-xl truncate">{usernames}</p>
+                            <p className="font-light text-xs truncate">{lastMessageInChat}</p>
                         </div>
                     </div>
                 </SidebarMenuButton>
