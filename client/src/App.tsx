@@ -7,7 +7,7 @@ import { InputMessage } from '@/components/InputMessage'
 import { Login } from '@/components/Login'
 import { MessageList } from '@/components/MessageList'
 import { MessageContainer } from '@/components/MessageContainer'
-import { SidebarProvider } from './components/ui/sidebar'
+import { SidebarProvider, SidebarTrigger } from './components/ui/sidebar'
 
 export type User = {
   id: string;
@@ -166,6 +166,7 @@ function App() {
         currUser={currUser}
         currChat={currChat}
       />
+      <SidebarTrigger />
       <CreateNewChatModal 
         currUser={currUser}
         onClickCreateChat={createNewChat}
